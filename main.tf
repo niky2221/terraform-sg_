@@ -1,13 +1,23 @@
-resource "aws_security_group" "mysql_sg" {
-  name        = "${var.project}-${var.environment}-mysql_sg"
-  description = "mysql security group"
+resource "aws_security_group" "sg_id" {
+  name        = local.sg_final_name
+  description = var.sg_description
   vpc_id      = data.aws_ssm_parameter.vpc_id.id
+
+   egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
 
   tags = merge(
     var.common_tags,
     var.sg_tags,
     {
-    Name = "${var.project}-${var.environment}-mysql_sg"
+    Name = local.sg_final_name
   }
   )
 }
+
+
